@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ArrowLeft } from "lucide-react";
-import BookVisitModal from "../components/BookVisitModal";
+import { ArrowLeft, MapPin } from "lucide-react";
+
 import useListingStore from "../store/useListingStore";
 import { data as staticListings } from "../assets/assets";
+import BookVisitModal from "../components/BookVisitModal";
 
 const PropertyDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const isStatic = location.pathname.includes("/static/");
   const { fetchListingById } = useListingStore();
 
+  const isStatic = location.pathname.includes("/static/");
   const [property, setProperty] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // ✅ missing state fixed
 
   useEffect(() => {
     const loadProperty = async () => {
       if (isStatic) {
-        const found = staticListings.find((item) => item.id === Number(id));
+       
+        const found = staticListings.find(
+          (item) => item.id === Number(id)
+        );
         setProperty(found);
       } else {
+      
         const data = await fetchListingById(id);
         setProperty(data);
       }
     };
 
     loadProperty();
-  }, [id]);
+  }, [id, isStatic, fetchListingById]);
 
   if (!property) {
     return (
@@ -41,6 +45,7 @@ const PropertyDetails = () => {
 
   return (
     <section className="py-12 px-6 max-w-6xl mx-auto">
+     
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-blue-600 mb-6"
@@ -55,7 +60,7 @@ const PropertyDetails = () => {
         transition={{ duration: 0.6 }}
         className="grid md:grid-cols-2 gap-10"
       >
-        {/* Image */}
+       
         <div className="rounded-xl overflow-hidden shadow-lg">
           <img
             src={property.image}
@@ -64,16 +69,17 @@ const PropertyDetails = () => {
           />
         </div>
 
-        {/* Content */}
+   
         <div>
+        
           <div className="flex items-center gap-3 mb-3">
             <span
               className={`px-3 py-1 text-xs rounded-full font-semibold ${
                 property.availability === "Available"
                   ? "bg-green-600 text-white"
                   : property.availability === "Limited"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-red-600 text-white"
+                  ? "bg-yellow-500 text-white"
+                  : "bg-red-600 text-white"
               }`}
             >
               {property.availability}
@@ -99,6 +105,7 @@ const PropertyDetails = () => {
 
           <p className="text-gray-700 mb-6">{property.status}</p>
 
+       
           <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="font-semibold">Price / sq.ft</p>
@@ -121,10 +128,13 @@ const PropertyDetails = () => {
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 mb-6">{property.directions}</p>
+          <p className="text-sm text-gray-600 mb-6">
+            {property.directions}
+          </p>
 
+         
           <div className="flex flex-wrap gap-2 mb-8">
-            {property.hotspots.map((spot) => (
+            {(property.hotspots || []).map((spot) => (
               <span
                 key={spot}
                 className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs"
@@ -143,6 +153,7 @@ const PropertyDetails = () => {
         </div>
       </motion.div>
 
+     
       <BookVisitModal
         isOpen={open}
         onClose={() => setOpen(false)}

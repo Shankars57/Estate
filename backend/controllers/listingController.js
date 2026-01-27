@@ -1,14 +1,30 @@
 import Listing from "../models/Listing.js";
 import imagekit from "../config/imageKit.js";
-
 export const createListing = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Image is required" });
     }
 
+    const requiredFields = [
+      "city",
+      "avgPricePerSqFt",
+      "rentalYield",
+      "luxuryRentRange",
+      "status",
+      "pincode",
+      "directions",
+      "contact",
+    ];
+
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ message: `${field} is required` });
+      }
+    }
+
     const uploadResponse = await imagekit.upload({
-      file: req.file.buffer,
+      file: req.file.buffer.toString("base64"),
       fileName: `${Date.now()}-${req.file.originalname}`,
       folder: "/estatehub/listings",
     });
@@ -19,21 +35,22 @@ export const createListing = async (req, res) => {
       avgPricePerSqFt: req.body.avgPricePerSqFt,
       rentalYield: req.body.rentalYield,
       luxuryRentRange: req.body.luxuryRentRange,
-      hotspots: req.body.hotspots.split(",").map((h) => h.trim()),
+      hotspots: req.body.hotspots
+        ? req.body.hotspots.split(",").map((h) => h.trim())
+        : [],
       status: req.body.status,
       pincode: req.body.pincode,
       directions: req.body.directions,
-      availability: req.body.availability,
-      areaType: req.body.areaType,
+      availability: req.body.availability || "Available",
+      areaType: req.body.areaType || "Urban",
       contact: req.body.contact,
       createdBy: req.user.id,
     });
 
     res.status(201).json(listing);
   } catch (error) {
-    console.log(error.message);
-
-    res.status(500).json({ message: error.message });
+    console.error("Create listing error:", error);
+    res.status(500).json({ message: "Failed to create listing" });
   }
 };
 

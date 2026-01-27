@@ -2,18 +2,18 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
+import useListingStore from "../store/useListingStore";
+import toast from "react-hot-toast";
 
 const AddListing = () => {
   const navigate = useNavigate();
-  const { addListing, loading } = useAppContext();
+  const { addListing, loading } = useListingStore();
   const token = localStorage.getItem("token");
 
   React.useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
   }, [token, navigate]);
+
   const [form, setForm] = React.useState({
     city: "",
     avgPricePerSqFt: "",
@@ -31,13 +31,23 @@ const AddListing = () => {
   const [imageFile, setImageFile] = React.useState(null);
   const [preview, setPreview] = React.useState(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only image files are allowed");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
   };
@@ -51,22 +61,19 @@ const AddListing = () => {
     e.preventDefault();
 
     if (!imageFile) {
-      alert("Please upload an image");
+      toast.error("Please upload an image");
       return;
     }
 
     const formData = new FormData();
-
     formData.append("image", imageFile);
-    Object.entries(form).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    Object.entries(form).forEach(([k, v]) => formData.append(k, v));
 
     try {
       await addListing(formData);
       navigate("/properties");
-    } catch (err) {
-      alert("Failed to add listing");
+    } catch {
+      // toast already handled in store
     }
   };
 
@@ -90,6 +97,7 @@ const AddListing = () => {
           Add New Property Listing
         </h2>
 
+        {/* Image */}
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2">
             Property Image
@@ -99,20 +107,11 @@ const AddListing = () => {
             <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-48 cursor-pointer text-gray-500 hover:border-blue-500 transition">
               <ImagePlus size={40} />
               <span className="mt-2 text-sm">Click to upload image</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
             </label>
           ) : (
             <div className="relative">
-              <img
-                src={preview}
-                alt="Preview"
-                className="h-48 w-full object-cover rounded-lg shadow"
-              />
+              <img src={preview} alt="Preview" className="h-48 w-full object-cover rounded-lg" />
               <button
                 type="button"
                 onClick={removeImage}
@@ -124,56 +123,26 @@ const AddListing = () => {
           )}
         </div>
 
+        {/* Inputs */}
         <div className="grid md:grid-cols-2 gap-4">
-          <input
-            name="city"
-            placeholder="City"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="avgPricePerSqFt"
-            placeholder="Avg Price per Sq.ft"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="rentalYield"
-            placeholder="Rental Yield"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="luxuryRentRange"
-            placeholder="Luxury Rent Range"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="pincode"
-            placeholder="Pincode"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="contact"
-            placeholder="Contact Number"
-            required
-            onChange={handleChange}
-            className="input"
-          />
-          <input
-            name="directions"
-            placeholder="Directions / Connectivity"
-            required
-            onChange={handleChange}
-            className="input"
-          />
+          {[
+            ["city", "City"],
+            ["avgPricePerSqFt", "Avg Price per Sq.ft"],
+            ["rentalYield", "Rental Yield"],
+            ["luxuryRentRange", "Luxury Rent Range"],
+            ["pincode", "Pincode"],
+            ["contact", "Contact Number"],
+            ["directions", "Directions / Connectivity"],
+          ].map(([name, placeholder]) => (
+            <input
+              key={name}
+              name={name}
+              placeholder={placeholder}
+              required
+              onChange={handleChange}
+              className="input"
+            />
+          ))}
         </div>
 
         <textarea
@@ -183,6 +152,7 @@ const AddListing = () => {
           onChange={handleChange}
           className="input mt-4 h-24"
         />
+
         <textarea
           name="hotspots"
           placeholder="Hotspots (comma separated)"
@@ -207,7 +177,7 @@ const AddListing = () => {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
         >
           {loading ? "Uploading..." : "Add Listing"}
         </button>

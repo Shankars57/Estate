@@ -4,6 +4,14 @@ EstateHub is a beginner-friendly **full-stack real estate web application** that
 
 ---
 
+## Live Links
+
+FrontEnd :- https://estate-sandy-ten.vercel.app/
+
+Backend :- https://estate-1-bcl8.onrender.com
+
+Github :- https://github.com/Shankars57/Estate.git
+
 ## 🚀 Features
 
 ### 👤 User Features
@@ -97,8 +105,8 @@ VITE_BACKEND=http://localhost:5000/api
 
 ▶️ Getting Started
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/estatehub.git
-cd estatehub
+git clone https://github.com/Shankars57/Estate.git
+cd Estate
 
 2️⃣ Backend Setup
 cd backend

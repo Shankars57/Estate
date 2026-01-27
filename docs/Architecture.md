@@ -1,4 +1,44 @@
-🧠 Architecture Explanation (Simple & Clear)
+## System Architecture 
+
+┌─────────────────────────────────────┐
+│           Client (Browser)           │
+│  React.js + Tailwind CSS (Vite)      │
+│                                     │
+│  - Property Browsing                │
+│  - Search & Filters                 │
+│  - Booking Modal                    │
+│  - Authentication (JWT)             │
+└───────────────▲─────────────────────┘
+                │ HTTPS (REST API)
+                │ Axios Requests
+┌───────────────┴─────────────────────┐
+│        Backend API Server            │
+│        Node.js + Express.js          │
+│                                     │
+│  - Auth Routes (JWT)                │
+│  - Listing APIs                     │
+│  - Booking APIs                     │
+│  - Middleware (Auth, Multer)        │
+└───────────────▲───────────▲─────────┘
+                │           │
+                │           │
+        ┌───────┴───────┐   │
+        │   ImageKit.io │   │
+        │ (Image Upload │   │
+        │   & CDN)      │   │
+        └───────────────┘   │
+                            │
+                    ┌───────┴────────┐
+                    │ MongoDB Atlas  │
+                    │ (Cloud DB)     │
+                    │                │
+                    │ - Users        │
+                    │ - Listings     │
+                    │ - Bookings     │
+                    └────────────────┘
+
+
+ Architecture Explanation (Simple & Clear)
 🔹 Overview
 
 EstateHub follows a 3-Tier Architecture designed for scalability, security, and real-time performance.

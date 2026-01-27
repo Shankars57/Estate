@@ -12,6 +12,11 @@ Backend :- https://estate-1-bcl8.onrender.com
 
 Github :- https://github.com/Shankars57/Estate.git
 
+## sample credentials 
+
+Email :- bonamgshankar@gmail.com
+password :- 12345678
+
 ## 🚀 Features
 
 ### 👤 User Features

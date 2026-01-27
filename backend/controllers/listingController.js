@@ -1,7 +1,6 @@
 import Listing from "../models/Listing.js";
 import imagekit from "../config/imageKit.js";
 
-
 export const createListing = async (req, res) => {
   try {
     if (!req.file) {
@@ -17,7 +16,7 @@ export const createListing = async (req, res) => {
     const listing = await Listing.create({
       city: req.body.city,
       image: uploadResponse.url,
-      avgPricePerSqFt: Number(req.body.avgPricePerSqFt),
+      avgPricePerSqFt: req.body.avgPricePerSqFt,
       rentalYield: req.body.rentalYield,
       luxuryRentRange: req.body.luxuryRentRange,
       hotspots: req.body.hotspots.split(",").map((h) => h.trim()),
@@ -33,11 +32,10 @@ export const createListing = async (req, res) => {
     res.status(201).json(listing);
   } catch (error) {
     console.log(error.message);
-    
+
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export const getListings = async (req, res) => {
   try {

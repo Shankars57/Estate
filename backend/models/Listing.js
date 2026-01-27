@@ -5,7 +5,7 @@ const listingSchema = new mongoose.Schema(
     city: { type: String, required: true },
     image: { type: String, required: true },
 
-    avgPricePerSqFt: { type: Number, required: true },
+    avgPricePerSqFt: { type: String, required: true },
     rentalYield: { type: String, required: true },
     luxuryRentRange: { type: String, required: true },
 

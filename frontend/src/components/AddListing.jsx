@@ -7,7 +7,13 @@ import { useAppContext } from "../context/AppContext";
 const AddListing = () => {
   const navigate = useNavigate();
   const { addListing, loading } = useAppContext();
+  const token = localStorage.getItem("token");
 
+  React.useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
   const [form, setForm] = React.useState({
     city: "",
     avgPricePerSqFt: "",

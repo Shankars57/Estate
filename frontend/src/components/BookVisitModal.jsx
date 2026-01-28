@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import useBookingStore from "../store/useBookingStore";
+import { useNavigate } from "react-router-dom";
 
 const BookVisitModal = ({ isOpen, onClose, property }) => {
   const [name, setName] = React.useState("");
@@ -10,6 +11,19 @@ const BookVisitModal = ({ isOpen, onClose, property }) => {
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
   const { createBooking, loading } = useBookingStore();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  if(!token){
+    toast.error("Please login to book a visit");
+    navigate("/login");
+  }
+  React.useEffect(() => {
+    if (token) {
+      const userData = JSON.parse(atob(token.split(".")[1]));
+      setName(userData.name || "");
+      setEmail(userData.email || "");
+    }
+  }, [token]);
   if (!isOpen) return null;
 
  const handleSubmit = async (e) => {

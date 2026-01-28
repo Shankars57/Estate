@@ -26,7 +26,7 @@ const Explore = () => {
             whileHover={{ y: -6 }}
             className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition"
           >
-            <Link to={`/property/${item.id}`}>
+            <Link to={`/property/static/${item.id}`}>
               <img
                 src={item.image}
                 alt={item.city}

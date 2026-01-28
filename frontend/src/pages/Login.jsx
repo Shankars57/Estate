@@ -51,6 +51,7 @@ const Login = () => {
               <input
                 type="text"
                 value={name}
+                placeholder="Enter your full name..."
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="w-full px-4 py-3 border rounded-lg"
@@ -62,6 +63,7 @@ const Login = () => {
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
               type="email"
+              placeholder="Enter your email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -74,6 +76,7 @@ const Login = () => {
             <input
               type="password"
               value={password}
+              placeholder="Enter your password..."
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full px-4 py-3 border rounded-lg"

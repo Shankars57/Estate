@@ -24,6 +24,8 @@ app.use(
 
 app.use(express.json());
 
+//Api Endpoints 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
 app.use("/api/bookings", bookingRoutes);
